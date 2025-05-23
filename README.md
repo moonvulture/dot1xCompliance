@@ -1,4 +1,3 @@
-# Writing README.md to a downloadable file
 # STIG 802.1X Compliance Parser
 
 A simple toolchain to parse daily Cisco switch configuration backups using **pyATS & Genie**, evaluate 802.1X compliance per interface, and output NDJSON for ingestion into Elasticsearch via Filebeat.
@@ -129,9 +128,3 @@ Feel free to submit issues or pull requests for enhancements:
 ## 📄 License
 
 This project is released under the MIT License. See `LICENSE` for details.
-"""
-file_path = "/mnt/data/README.md"
-with open(file_path, "w") as f:
-    f.write(content)
-
-file_path

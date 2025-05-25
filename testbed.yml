@@ -1,0 +1,23 @@
+# Example
+# -------
+#
+#   an example testbed file - ios_testbed.yaml
+
+testbed:
+    name: IOS_Testbed
+    credentials:
+        default:
+            username: michael.s.sullivan50.civ
+            password: 1Dr-PqQ-fc43_P
+        enable:
+            password: 1Dr-PqQ-fc43_P
+
+devices:
+    Cat8K: # <----- must match to your device hostname in the prompt
+        os: iosxe
+        type: switch
+        connections:
+            cli:
+              protocol: ssh
+              ip: devnetsandboxiosxe.cisco.com
+              port: 22

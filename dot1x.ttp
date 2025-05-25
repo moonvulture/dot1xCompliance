@@ -1,0 +1,4 @@
+<group name="interfaces">
+interface {{ interface }}
+ {{ command | re(".*") }}
+</group>

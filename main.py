@@ -1,13 +1,19 @@
-from pathlib import Path
-from dotenv import load_dotenv
-import os
+from ttp import ttp
 
-# Use pathlib to get the path to your .env file (for example, in the project root)
-env_path = Path(__file__).parent / '.env'
+# Load your config as a string
+with open('switch.cfg') as f:
+    config_data = f.read()
 
-# Load the .env file
-load_dotenv(dotenv_path=env_path)
+# Load your TTP template as a string
+with open('dot1x.ttp') as f:
+    ttp_template = f.read()
 
-# Access a secret or environment variable
-db_password = os.getenv('DB_PASSWORD')
-print(f"Database password: {db_password}")
+# Parse the config
+parser = ttp(data=config_data, template=ttp_template)
+parser.parse()
+results = parser.result()[0][0]['interfaces']
+
+# Check for dot1x on each interface
+for intf in results:
+    has_dot1x = any('authentication port-control auto' in cmd for cmd in intf['command'])
+    print(f"{intf['interface']}: {'dot1x enabled' if has_dot1x else 'dot1x NOT enabled'}")

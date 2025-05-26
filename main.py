@@ -1,3 +1,4 @@
+import json
 from ttp import ttp
 
 # Load your config as a string
@@ -12,8 +13,11 @@ with open('dot1x.ttp') as f:
 parser = ttp(data=config_data, template=ttp_template)
 parser.parse()
 results = parser.result()[0][0]['interfaces']
-
+print(json.dumps(results))
 # Check for dot1x on each interface
 for intf in results:
-    has_dot1x = any('authentication port-control auto' in cmd for cmd in intf['command'])
-    print(f"{intf['interface']}: {'dot1x enabled' if has_dot1x else 'dot1x NOT enabled'}")
+    if intf.get('access'):
+        dot1x_enabled = 'dot1x' in intf
+        print(f"{intf['interface']}: access port, dot1x {'ENABLED' if dot1x_enabled else 'NOT enabled'}")
+    else:
+        print(f"{intf['interface']}: not access port")

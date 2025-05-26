@@ -1,4 +1,14 @@
+<macro>
+def to_bool(captured_data):
+    represent_as_bools = ["access", "authentication port-control auto"]
+    if captured_data in represent_as_bools:
+        return captured_data, {captured_data: True}
+</macro>
+
 <group name="interfaces">
 interface {{ interface }}
- {{ command | re(".*") }}
+ switchport mode {{ mode | macro("to_bool") }}
+ {{ dot1x | re("authentication port-control auto") | macro("to_bool") }}
+ {{ description | re("description.*") }}
+!
 </group>

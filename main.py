@@ -58,23 +58,27 @@ def to_ecs(issue):
     }
 
 def elasticsearch_ingest(ndjson_dir="ndjson", index="dot1x-compliance"):
-    es = get_es_client()
-    ndjson_path = Path(ndjson_dir)
-    all_issues = []
-    for file in ndjson_path.glob("*.json"):
-        with file.open() as f:
-            for line in f:
-                issue = json.loads(line)
-                ecs_doc = to_ecs(issue)
-                all_issues.append({"_index": index, "_source": ecs_doc})
+    try:
+        es = get_es_client()
+        ndjson_path = Path(ndjson_dir)
+        all_issues = []
+        for file in ndjson_path.glob("*.json"):
+            with file.open() as f:
+                for line in f:
+                    issue = json.loads(line)
+                    ecs_doc = to_ecs(issue)
+                    all_issues.append({"_index": index, "_source": ecs_doc})
 
-    # Bulk ingest
-    if all_issues:
-        helpers.bulk(es, all_issues)
-        logger.info(f"Pushed {len(all_issues)} docs to {index} index")
-    else:
-        logger.info("No compliance issues to ingest.")
-
+        # Bulk ingest
+        if all_issues:
+            helpers.bulk(es, all_issues)
+            logger.info(f"Pushed {len(all_issues)} docs to {index} index")
+        else:
+            logger.info("No compliance issues to ingest.")
+            
+    except Exception as e:
+        logger.error(f"Elasticsearch ingestion failed: {e}")
+        return False
 
 def setup_logger():
     logger = logging.getLogger("dot1xCompliance")
